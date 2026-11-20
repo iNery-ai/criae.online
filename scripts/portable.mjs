@@ -13,4 +13,12 @@ const [script, style] = await Promise.all([
 // The same React build also opens directly from disk, without a server.
 html = html.replace(scriptTag[0], () => `<script type="module">\n${script.replaceAll('</script', '<\\/script')}\n</script>`);
 html = html.replace(styleTag[0], () => `<style>\n${style}\n</style>`);
+
+const iconTag = html.match(/<link rel="icon"[^>]+href="(\.\/assets\/[^"]+\.png)"[^>]*>/);
+if (iconTag) {
+  const icon = await readFile(new URL(iconTag[1], output));
+  const dataUrl = `data:image/png;base64,${icon.toString('base64')}`;
+  html = html.replace(iconTag[0], () => iconTag[0].replace(iconTag[1], dataUrl));
+}
+
 await writeFile(new URL('../Natal Mágico_ 40 atividades de Natal para imprimir _ Criaê.html', import.meta.url), html);
