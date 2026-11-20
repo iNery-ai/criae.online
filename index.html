@@ -9,8 +9,36 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Meta Pixel -->
+    <script>
+      (function (window, document) {
+        if (window.fbq) return;
+
+        const fbq = window.fbq = function () {
+          if (fbq.callMethod) {
+            fbq.callMethod.apply(fbq, arguments);
+          } else {
+            fbq.queue.push(arguments);
+          }
+        };
+        if (!window._fbq) window._fbq = fbq;
+        fbq.push = fbq;
+        fbq.loaded = true;
+        fbq.version = '2.0';
+        fbq.queue = [];
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+        document.head.appendChild(script);
+
+        fbq('init', '2278057266394112');
+        fbq('track', 'PageView');
+      })(window, document);
+    </script>
   </head>
   <body>
+    <noscript><img src="https://www.facebook.com/tr?id=2278057266394112&amp;ev=PageView&amp;noscript=1" width="1" height="1" alt="" style="display:none"></noscript>
     <div id="root"></div>
     <noscript>Ative o JavaScript para ver a página e folhear a prévia. <a href="https://pay.kiwify.com.br/K1eUYmk">Conheça a oferta do Natal Mágico</a>.</noscript>
     <script type="module" src="/src/main.jsx"></script>
