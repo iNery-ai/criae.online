@@ -5,6 +5,8 @@ import logo from '../assets/ui/logo.webp';
 import globeImage from '../assets/ui/globo.webp';
 import memoryImage from '../assets/ui/memoria.webp';
 import bonusImage from '../assets/ui/bonus.webp';
+import bonusTags from '../assets/ui/bonus-etiquetas.webp';
+import bonusLetter from '../assets/ui/bonus-cartinha.webp';
 import page1 from '../assets/ui/atividade-01.webp';
 import page2 from '../assets/ui/atividade-02.webp';
 import page3 from '../assets/ui/atividade-03.webp';
@@ -16,7 +18,10 @@ import './styles.css';
 const checkout = 'https://pay.kiwify.com.br/K1eUYmk';
 const instagram = 'https://www.instagram.com/criae.online/';
 const whatsapp = `https://wa.me/5575983378022?text=${encodeURIComponent('Olá! Tenho uma dúvida sobre o Natal Mágico.')}`;
-const price = 'R$ 17,90';
+const promotionPrice = 'R$ 17,90';
+const regularPrice = 'R$ 47,90';
+const promotionDeadline = '2026-11-22T00:00:00-03:00';
+const promotionEndsAt = Date.parse(promotionDeadline);
 const pages = [
   { title: 'Capa', image: page1 },
   { title: 'Guia do adulto', image: page2 },
@@ -49,33 +54,67 @@ function Header() {
     <div className="wrap nav">
       <a className="brand" href="#inicio"><img src={logo} alt="Criaê" width="102" height="39" /></a>
       <nav aria-label="Navegação principal"><a href="#caderno">Folhear</a><a href="#kit">Dentro do kit</a><a href="#duvidas">Dúvidas</a></nav>
-      <ButtonLink href="#comprar" variant="nav">Ver oferta</ButtonLink>
+      <ButtonLink href="#comprar" variant="nav">Garantir meu kit</ButtonLink>
     </div>
   </header>;
 }
 
-function Hero() {
+function OfferCountdown() {
+  const [secondsLeft, setSecondsLeft] = useState(() => Math.ceil((promotionEndsAt - Date.now()) / 1000));
+
+  useEffect(() => {
+    const tick = () => setSecondsLeft(Math.ceil((promotionEndsAt - Date.now()) / 1000));
+    const interval = window.setInterval(tick, 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  if (secondsLeft <= 0) return null;
+
+  const units = [
+    [Math.floor(secondsLeft / 86400), 'dias'],
+    [Math.floor(secondsLeft / 3600) % 24, 'horas'],
+    [Math.floor(secondsLeft / 60) % 60, 'min'],
+    [secondsLeft % 60, 'seg'],
+  ];
+
+  return <section className="deadline" aria-labelledby="launch-label">
+    <p className="deadline-label" id="launch-label"><span aria-hidden="true">⚠️</span> Oferta de lançamento</p>
+    <p className="deadline-price">Hoje por apenas <strong>{promotionPrice}</strong></p>
+    <p className="deadline-after">Depois: {regularPrice}</p>
+    <div className="countdown" role="timer" aria-label="Tempo restante da oferta">
+      {units.map(([amount, unit]) => <div className="countdown-unit" key={unit}><b>{String(amount).padStart(2, '0')}</b><span>{unit}</span></div>)}
+    </div>
+    <p className="deadline-date">Encerra em <time dateTime={promotionDeadline}>22/11 às 00h</time></p>
+  </section>;
+}
+
+function Hero({ promotionActive }) {
   return <>
     <section className="hero" aria-labelledby="hero-title">
       <div className="wrap hero-grid">
         <div className="hero-copy">
           <p className="eyebrow"><span aria-hidden="true">✦</span> Natal Mágico da Criaê</p>
-          <h1 id="hero-title">Natal no papel. <em>Diversão em família.</em></h1>
-          <p className="hero-description">40 atividades natalinas para colorir, recortar e brincar junto. Escolha uma página, imprima em A4 e convide a criança para criar com você.</p>
-          <div className="hero-actions"><ButtonLink href="#comprar">Quero o kit por {price}</ButtonLink><a className="text-link" href="#caderno">Folhear 6 páginas grátis</a></div>
-          <p className="hero-meta">De 3 a 8 anos <span>·</span> Pagamento único <span>·</span> Garantia de 7 dias</p>
+          <h1 id="hero-title">O Natal das crianças já tem atividade. <em>Você só precisa imprimir!</em></h1>
+          <p className="hero-description">São <strong>40 atividades natalinas prontas para imprimir</strong>, colorir, recortar e brincar. Tudo pensado para facilitar sua rotina e proporcionar momentos de criatividade e diversão com as crianças, em casa ou na escola.</p>
         </div>
         <figure className="hero-picture">
-          <img src={heroImage} width="664" height="1180" alt="Criança e adulta colorindo a atividade Meu Globo de Natal juntas à mesa" fetchPriority="high" />
-          <figcaption><span className="picture-mark" aria-hidden="true">✦</span><span><strong>Meu Globo de Natal</strong><small>Uma das brincadeiras do caderno</small></span></figcaption>
+          <img src={heroImage} width="867" height="1540" alt="Capa do Natal Mágico e folhas do jogo da memória, do globo de Natal e de ligue os pontos sobre uma mesa" fetchPriority="high" />
+          <figcaption>Prévia do caderno</figcaption>
         </figure>
+        <div className="hero-purchase">
+          <div className="hero-actions">
+            <ButtonLink href="#comprar">QUERO AS 40 ATIVIDADES</ButtonLink>
+            <p className="hero-meta">Acesso imediato <span aria-hidden="true">•</span> Material digital <span aria-hidden="true">•</span> Pronto para imprimir</p>
+          </div>
+          {promotionActive && <OfferCountdown />}
+        </div>
       </div>
     </section>
-    <div className="quick-facts"><div className="wrap"><span><b>40</b> atividades prontas</span><span><b>3–8</b> anos de idade</span><span><b>A4</b> imprima em casa</span></div></div>
+    <div className="quick-facts"><ul className="wrap" aria-label="Benefícios do Natal Mágico"><li><b>40</b> atividades prontas</li><li><b>3 a 8</b> anos</li><li><b>PDF</b> em A4</li></ul></div>
   </>;
 }
 
-function Book() {
+function Book({ price }) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState('');
   const dialog = useRef(null);
@@ -196,16 +235,31 @@ function Kit() {
       <article><span className="kit-label">40 páginas</span><h3>Edição completa</h3><p>Colorir, recortar e colar com a Turma do Natal. Inclui jogos, calendário de Advento, guia do adulto e gabarito.</p></article>
       <article><span className="kit-label">24 páginas</span><h3>Versão econômica</h3><p>Páginas em preto e branco para imprimir em casa e deixar as cores por conta da criança.</p></article>
     </div>
-    <article className="bonus"><div className="bonus-art"><img src={bonusImage} alt="Capa do Kit Personalizado do Natal" width="708" height="1000" loading="lazy" /></div>
-      <div className="bonus-copy"><p className="eyebrow">Bônus incluído · 12 páginas</p><h3>Kit Personalizado</h3><p>Coloque o nome da criança na cartinha ao Papai Noel, no certificado e nas etiquetas de presente.</p><p>O kit também traz molduras da Turma do Natal, marcadores de livro e cartões de lugar para a ceia. Preencha no PDF ou escreva à mão.</p></div>
+    <article className="bonus" aria-labelledby="bonus-title">
+      <div className="bonus-copy">
+        <div className="bonus-labels">
+          <p className="eyebrow"><span aria-hidden="true">🎁</span> Bônus incluído • 12 páginas</p>
+          <span className="bonus-badge">Grátis com o kit</span>
+        </div>
+        <h3 id="bonus-title">Um Natal ainda mais especial com o nome da criança! <span aria-hidden="true">✨</span></h3>
+        <p className="bonus-product">Kit Personalizado do Natal</p>
+        <p className="bonus-description">Personalize a cartinha ao Papai Noel, o certificado e as etiquetas de presente com o nome da criança.</p>
+        <p className="bonus-description">Também inclui molduras da Turma do Natal, marcadores de livro e cartões de lugar.</p>
+        <p className="bonus-tip"><span aria-hidden="true">✨</span> <strong>Personalize no próprio PDF ou preencha à mão.</strong></p>
+      </div>
+      <div className="bonus-art" role="img" aria-label="Simulação do Kit Personalizado impresso com a capa, as etiquetas de presente e a cartinha ao Papai Noel">
+        <img className="bonus-sheet bonus-sheet--tags" src={bonusTags} alt="" width="524" height="740" loading="lazy" />
+        <img className="bonus-sheet bonus-sheet--letter" src={bonusLetter} alt="" width="524" height="740" loading="lazy" />
+        <img className="bonus-sheet bonus-sheet--cover" src={bonusImage} alt="" width="708" height="1000" loading="lazy" />
+      </div>
     </article>
   </div></section>;
 }
 
-function Offer() {
+function Offer({ price, promotionActive }) {
   return <section className="section offer" id="comprar" aria-labelledby="offer-title"><div className="wrap offer-grid">
     <div className="offer-copy"><p className="eyebrow">Kit digital Natal Mágico</p><h2 id="offer-title">A próxima brincadeira já está pronta.</h2><p>Da primeira folha colorida ao cartão para a família, escolha o que cabe no dia de vocês.</p><ul className="checklist"><li>Edição completa com 40 atividades</li><li>Versão econômica para colorir</li><li>Bônus Kit Personalizado</li></ul></div>
-    <div className="price-card"><p className="eyebrow">Tudo incluído</p><p className="offer-price">{price}</p><p className="price-meta">Pagamento único · Pix ou cartão</p><ButtonLink href={checkout}>Comprar Natal Mágico</ButtonLink><p className="price-delivery">Acesso aos PDFs após a confirmação do pagamento.</p></div>
+    <div className="price-card"><p className="eyebrow">{promotionActive ? 'Oferta de lançamento' : 'Kit completo'}</p><p className="offer-price">{price}</p><p className="price-meta">Pagamento único · Pix ou cartão</p><ButtonLink href={checkout}>Comprar Natal Mágico</ButtonLink>{promotionActive && <p className="price-deadline">Encerra em <time dateTime={promotionDeadline}>22/11 às 00h</time></p>}<p className="price-delivery">Acesso aos PDFs após a confirmação do pagamento.</p></div>
   </div></section>;
 }
 
@@ -223,37 +277,97 @@ function FAQ() {
   </div></section>;
 }
 
-function MobileOffer() {
+function Footer() {
+  return <footer className="site-footer">
+    <div className="wrap footer">
+      <a className="footer-brand" href="#inicio"><img src={logo} width="102" height="39" alt="Criaê, voltar ao início" /></a>
+      <p className="footer-tagline">Criatividade que vira aprendizado. <span aria-hidden="true">✨</span></p>
+      <p className="footer-description">Atividades educativas, materiais criativos e experiências para aprender brincando.</p>
+      <nav className="footer-links" aria-label="Contato da Criaê">
+        <a href={instagram} target="_blank" rel="noopener noreferrer">@criae.online</a>
+        <a href={whatsapp} target="_blank" rel="noopener noreferrer">Suporte via WhatsApp</a>
+      </nav>
+      <div className="footer-legal">
+        <p>© 2026 Criaê. Todos os direitos reservados.</p>
+        <p>Material digital sujeito às condições de uso.</p>
+      </div>
+    </div>
+  </footer>;
+}
+
+function MobileOffer({ price, promotionActive }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const hero = document.querySelector('.hero');
+    const heroButton = document.querySelector('.hero-actions .button');
     const offer = document.getElementById('comprar');
-    if (!('IntersectionObserver' in window)) return;
-    let heroPassed = false;
-    let offerVisible = false;
-    const observer = new IntersectionObserver(entries => {
-      for (const entry of entries) {
-        if (entry.target === hero) heroPassed = !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
-        if (entry.target === offer) offerVisible = entry.isIntersecting;
-      }
-      setVisible(heroPassed && !offerVisible);
-    });
-    observer.observe(hero);
-    observer.observe(offer);
-    return () => observer.disconnect();
+    if (!heroButton || !offer) return;
+    let frameId = 0;
+
+    function scheduleUpdate() {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0;
+        const purchasePassed = heroButton.getBoundingClientRect().bottom <= 0;
+        const { top, bottom } = offer.getBoundingClientRect();
+        const offerVisible = top < window.innerHeight && bottom > 0;
+        setVisible(purchasePassed && !offerVisible);
+      });
+    }
+
+    const layoutObserver = new ResizeObserver(scheduleUpdate);
+    layoutObserver.observe(document.getElementById('conteudo'));
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    scheduleUpdate();
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      layoutObserver.disconnect();
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+    };
   }, []);
 
-  return visible && <aside className="mobile-offer" aria-label="Oferta Natal Mágico"><div><strong>{price}</strong><span>Pagamento único</span></div><ButtonLink href="#comprar">Ver oferta</ButtonLink></aside>;
+  return visible && <aside className="mobile-offer" aria-label="Compra do Natal Mágico">
+    <div>
+      <div className="mobile-offer-prices">
+        <strong>{price}</strong>
+        {promotionActive && <s>{regularPrice}</s>}
+      </div>
+      <p>Pagamento único</p>
+    </div>
+    <ButtonLink href="#comprar">Garantir meu kit</ButtonLink>
+  </aside>;
 }
 
 function App() {
+  const [promotionActive, setPromotionActive] = useState(() => Date.now() < promotionEndsAt);
+  const price = promotionActive ? promotionPrice : regularPrice;
+
+  useEffect(() => {
+    let timeout;
+
+    function syncPromotion() {
+      window.clearTimeout(timeout);
+      const remaining = promotionEndsAt - Date.now();
+      setPromotionActive(remaining > 0);
+      if (remaining > 0) timeout = window.setTimeout(syncPromotion, remaining);
+    }
+
+    syncPromotion();
+    document.addEventListener('visibilitychange', syncPromotion);
+    return () => {
+      window.clearTimeout(timeout);
+      document.removeEventListener('visibilitychange', syncPromotion);
+    };
+  }, []);
+
   return <>
     <a className="skip" href="#conteudo">Pular para o conteúdo</a>
     <Header />
-    <main id="conteudo"><Hero /><Activities /><Book /><Kit /><Offer /><Guarantee /><FAQ /></main>
-    <footer><div className="wrap footer"><a href="#inicio"><img src={logo} width="88" height="33" alt="Criaê, voltar ao início" /></a><p>© Criaê · Material digital de uso pessoal.</p><a href={instagram}>@criae.online</a></div></footer>
-    <MobileOffer />
+    <main id="conteudo"><Hero promotionActive={promotionActive} /><Activities /><Book price={price} /><Kit /><Offer price={price} promotionActive={promotionActive} /><Guarantee /><FAQ /></main>
+    <Footer />
+    <MobileOffer price={price} promotionActive={promotionActive} />
   </>;
 }
 
