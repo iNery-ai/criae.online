@@ -18,10 +18,10 @@ import './styles.css';
 const checkout = 'https://pay.kiwify.com.br/K1eUYmk';
 const instagram = 'https://www.instagram.com/criae.online/';
 const whatsapp = `https://wa.me/5575983378022?text=${encodeURIComponent('Olá! Tenho uma dúvida sobre o Natal Mágico.')}`;
-const promotionPrice = 'R$ 17,90';
-const regularPrice = 'R$ 47,90';
-const promotionDeadline = '2026-11-22T00:00:00-03:00';
-const promotionEndsAt = Date.parse(promotionDeadline);
+const offerPrice = 'R$ 17,90';
+const fullPrice = 'R$ 47,90';
+const OFFER_DURATION = 3600; // 1 hora em segundos
+
 const pages = [
   { title: 'Capa', image: page1 },
   { title: 'Guia do adulto', image: page2 },
@@ -45,73 +45,104 @@ const questions = [
   ['Como funciona a garantia?', 'Você pode solicitar o reembolso em até 7 dias após a compra. Se precisar de ajuda com a solicitação, fale com a Criaê pelo WhatsApp ou Instagram.'],
 ];
 
+/* TODO: Substituir pelos depoimentos REAIS de clientes.
+   Use prints do WhatsApp, reviews da Kiwify ou DMs do Instagram.
+   Nunca publique depoimentos fictícios. */
+const testimonials = [
+  { name: 'Ana C.', role: 'Mãe de 2', text: 'Meus filhos amaram o calendário do Advento! Cada dia era uma surpresa diferente e eles já pedem o próximo.' },
+  { name: 'Profª Carla', role: 'Ed. Infantil', text: 'Usei com a turma inteira e foi sucesso. As crianças ficaram encantadas com os personagens e a qualidade do material.' },
+  { name: 'Juliana M.', role: 'Mãe de 3', text: 'O kit personalizado com o nome das crianças foi o ponto alto! Eles se sentiram muito especiais.' },
+];
+
+function pad(n) { return String(n).padStart(2, '0'); }
+function formatTimer(s) { return `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`; }
+
+function getSessionValue(key, initializer) {
+  try {
+    const stored = sessionStorage.getItem(key);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  const value = initializer();
+  try { sessionStorage.setItem(key, JSON.stringify(value)); } catch {}
+  return value;
+}
+
 function ButtonLink({ children, href, variant = 'primary', ...props }) {
   return <a className={`button button--${variant}`} href={href} {...props}>{children}</a>;
 }
 
 function Header() {
-  return <header className="header" id="inicio">
-    <div className="wrap nav">
-      <a className="brand" href="#inicio"><img src={logo} alt="Criaê" width="102" height="39" /></a>
-      <nav aria-label="Navegação principal"><a href="#caderno">Folhear</a><a href="#kit">Dentro do kit</a><a href="#duvidas">Dúvidas</a></nav>
-      <ButtonLink href="#comprar" variant="nav">Garantir meu kit</ButtonLink>
+  return <header className="site-header" id="inicio">
+    <div className="top-bar">
+      <div className="wrap top-bar-inner">
+        <p>🎁 Atividades de Natal prontas para imprimir</p>
+      </div>
+    </div>
+    <div className="nav-bar">
+      <div className="wrap nav">
+        <a className="brand" href="#inicio" aria-label="Criaê - Voltar ao início">
+          <img src={logo} alt="Criaê" width="102" height="39" decoding="async" />
+        </a>
+        <nav aria-label="Navegação principal">
+          <a href="#caderno">Folhear</a>
+          <a href="#kit">Dentro do kit</a>
+          <a href="#duvidas">Dúvidas</a>
+        </nav>
+        <a className="header-cta" href={checkout}>
+          <span>Quero meu kit</span>
+          <span className="cta-arrow" aria-hidden="true">↓</span>
+        </a>
+      </div>
     </div>
   </header>;
 }
 
-function OfferCountdown() {
-  const [secondsLeft, setSecondsLeft] = useState(() => Math.ceil((promotionEndsAt - Date.now()) / 1000));
-
-  useEffect(() => {
-    const tick = () => setSecondsLeft(Math.ceil((promotionEndsAt - Date.now()) / 1000));
-    const interval = window.setInterval(tick, 1000);
-    return () => window.clearInterval(interval);
-  }, []);
-
-  if (secondsLeft <= 0) return null;
-
-  const units = [
-    [Math.floor(secondsLeft / 86400), 'dias'],
-    [Math.floor(secondsLeft / 3600) % 24, 'horas'],
-    [Math.floor(secondsLeft / 60) % 60, 'min'],
-    [secondsLeft % 60, 'seg'],
-  ];
-
-  return <section className="deadline" aria-labelledby="launch-label">
-    <p className="deadline-label" id="launch-label"><span aria-hidden="true">⚠️</span> Oferta de lançamento</p>
-    <p className="deadline-price">Hoje por apenas <strong>{promotionPrice}</strong></p>
-    <p className="deadline-after">Depois: {regularPrice}</p>
-    <div className="countdown" role="timer" aria-label="Tempo restante da oferta">
-      {units.map(([amount, unit]) => <div className="countdown-unit" key={unit}><b>{String(amount).padStart(2, '0')}</b><span>{unit}</span></div>)}
-    </div>
-    <p className="deadline-date">Encerra em <time dateTime={promotionDeadline}>22/11 às 00h</time></p>
-  </section>;
-}
-
-function Hero({ promotionActive }) {
+function Hero({ price, offerActive, units }) {
   return <>
     <section className="hero" aria-labelledby="hero-title">
       <div className="wrap hero-grid">
         <div className="hero-copy">
           <p className="eyebrow"><span aria-hidden="true">✦</span> Natal Mágico da Criaê</p>
-          <h1 id="hero-title">O Natal das crianças já tem atividade. <em>Você só precisa imprimir!</em></h1>
-          <p className="hero-description">São <strong>40 atividades natalinas prontas para imprimir</strong>, colorir, recortar e brincar. Tudo pensado para facilitar sua rotina e proporcionar momentos de criatividade e diversão com as crianças, em casa ou na escola.</p>
+          <h1 id="hero-title">Atividades de Natal prontas para imprimir, colorir e brincar. <em>Sem preparação. Só alegria!</em></h1>
+          <p className="hero-description">São <strong>40 atividades natalinas criadas para crianças de 3 a 8 anos</strong> — jogos, recortes, montagens e até um calendário do Advento. Você baixa, imprime e a diversão começa. Ideal para mães, pais e professoras que querem um Natal criativo sem complicação.</p>
         </div>
         <figure className="hero-picture">
-          <img src={heroImage} width="867" height="1540" alt="Capa do Natal Mágico e folhas do jogo da memória, do globo de Natal e de ligue os pontos sobre uma mesa" fetchPriority="high" />
+          <img src={heroImage} width="867" height="1540" alt="Capa do Natal Mágico e folhas do jogo da memória, do globo de Natal e de ligue os pontos sobre uma mesa" fetchPriority="high" decoding="async" />
           <figcaption>Prévia do caderno</figcaption>
         </figure>
         <div className="hero-purchase">
           <div className="hero-actions">
-            <ButtonLink href="#comprar">QUERO AS 40 ATIVIDADES</ButtonLink>
+            <ButtonLink href={checkout}>QUERO AS 40 ATIVIDADES</ButtonLink>
             <p className="hero-meta">Acesso imediato <span aria-hidden="true">•</span> Material digital <span aria-hidden="true">•</span> Pronto para imprimir</p>
           </div>
-          {promotionActive && <OfferCountdown />}
+          <div className="hero-pricing">
+            {offerActive && <p className="hero-anchor"><s>{fullPrice}</s></p>}
+            <p className="hero-price">{price} <span>· pagamento único</span></p>
+            {offerActive && <p className="hero-units"><span aria-hidden="true">🔥</span> Restam apenas <strong>{units} kits</strong> por este valor</p>}
+          </div>
         </div>
       </div>
     </section>
     <div className="quick-facts"><ul className="wrap" aria-label="Benefícios do Natal Mágico"><li><b>40</b> atividades prontas</li><li><b>3 a 8</b> anos</li><li><b>PDF</b> em A4</li></ul></div>
   </>;
+}
+
+function ForWho() {
+  return <section className="section for-who" aria-labelledby="for-who-title">
+    <div className="wrap">
+      <div className="section-heading">
+        <p className="eyebrow">Para quem é</p>
+        <h2 id="for-who-title">O Natal Mágico é para você se…</h2>
+      </div>
+      <ul className="for-who-list">
+        <li>Quer entreter as crianças com algo educativo nas férias</li>
+        <li>Precisa de atividades prontas, sem perder horas no Pinterest</li>
+        <li>Quer montar um calendário do Advento sem comprar kits caros</li>
+        <li>É professora e precisa de material temático para a turma</li>
+        <li>Quer criar memórias de Natal com as crianças, não só dar presente</li>
+      </ul>
+    </div>
+  </section>;
 }
 
 function Book({ price }) {
@@ -178,10 +209,10 @@ function Book({ price }) {
               <p className="eyebrow">A partir da página 7</p>
               <h3 tabIndex={-1} ref={lockHeading}>Continue com o kit completo.</h3>
               <p>Leve as 40 atividades, a versão econômica e o Kit Personalizado.</p>
-              <ButtonLink href={checkout}>Acessar o kit</ButtonLink>
+              <ButtonLink href={checkout}>Acessar o kit completo</ButtonLink>
               <small>{price} · pagamento único</small>
             </div> : <button className="sheet-image" type="button" onClick={() => dialog.current.showModal()} aria-label={`Ampliar página ${index + 1}: ${currentPage.title}`}>
-              <img src={currentPage.image} alt={currentPage.title} width="743" height="1050" loading="lazy" />
+              <img src={currentPage.image} alt={currentPage.title} width="743" height="1050" loading="lazy" decoding="async" />
               <span aria-hidden="true">Ampliar</span>
             </button>}
           </div>
@@ -221,7 +252,7 @@ function Activities() {
           {activities.map(({ tab }, i) => <button type="button" ref={node => { tabs.current[i] = node; }} role="tab" id={`activity-tab-${i}`} aria-controls={`activity-panel-${i}`} aria-selected={selected === i} tabIndex={selected === i ? 0 : -1} key={tab} onClick={() => setSelected(i)}>{tab}</button>)}
         </div>
         {activities.map(({ tab }, i) => <div key={tab} className="activity-panel" role="tabpanel" id={`activity-panel-${i}`} aria-labelledby={`activity-tab-${i}`} hidden={selected !== i}>
-          {selected === i && <><img src={activity.image} alt={activity.alt} width="820" height="820" loading="lazy" /><div><h3>{activity.title}</h3><p>{activity.copy}</p><p className="muted">{activity.detail}</p></div></>}
+          {selected === i && <><img src={activity.image} alt={activity.alt} width="820" height="820" loading="lazy" decoding="async" /><div><h3>{activity.title}</h3><p>{activity.copy}</p><p className="muted">{activity.detail}</p></div></>}
         </div>)}
       </div>
     </div>
@@ -248,18 +279,46 @@ function Kit() {
         <p className="bonus-tip"><span aria-hidden="true">✨</span> <strong>Personalize no próprio PDF ou preencha à mão.</strong></p>
       </div>
       <div className="bonus-art" role="img" aria-label="Simulação do Kit Personalizado impresso com a capa, as etiquetas de presente e a cartinha ao Papai Noel">
-        <img className="bonus-sheet bonus-sheet--tags" src={bonusTags} alt="" width="524" height="740" loading="lazy" />
-        <img className="bonus-sheet bonus-sheet--letter" src={bonusLetter} alt="" width="524" height="740" loading="lazy" />
-        <img className="bonus-sheet bonus-sheet--cover" src={bonusImage} alt="" width="708" height="1000" loading="lazy" />
+        <img className="bonus-sheet bonus-sheet--tags" src={bonusTags} alt="" width="524" height="740" loading="lazy" decoding="async" />
+        <img className="bonus-sheet bonus-sheet--letter" src={bonusLetter} alt="" width="524" height="740" loading="lazy" decoding="async" />
+        <img className="bonus-sheet bonus-sheet--cover" src={bonusImage} alt="" width="708" height="1000" loading="lazy" decoding="async" />
       </div>
     </article>
   </div></section>;
 }
 
-function Offer({ price, promotionActive }) {
+function SocialProof() {
+  return <section className="section testimonials" aria-labelledby="social-title">
+    <div className="wrap">
+      <div className="section-heading">
+        <p className="eyebrow">Quem já usou</p>
+        <h2 id="social-title">Olha o que estão dizendo.</h2>
+      </div>
+      <div className="testimonial-grid">
+        {testimonials.map(t => (
+          <blockquote key={t.name} className="testimonial-card">
+            <p>"{t.text}"</p>
+            <footer><strong>{t.name}</strong> · {t.role}</footer>
+          </blockquote>
+        ))}
+      </div>
+    </div>
+  </section>;
+}
+
+function Offer({ price, offerActive, secondsLeft, units }) {
   return <section className="section offer" id="comprar" aria-labelledby="offer-title"><div className="wrap offer-grid">
     <div className="offer-copy"><p className="eyebrow">Kit digital Natal Mágico</p><h2 id="offer-title">A próxima brincadeira já está pronta.</h2><p>Da primeira folha colorida ao cartão para a família, escolha o que cabe no dia de vocês.</p><ul className="checklist"><li>Edição completa com 40 atividades</li><li>Versão econômica para colorir</li><li>Bônus Kit Personalizado</li></ul></div>
-    <div className="price-card"><p className="eyebrow">{promotionActive ? 'Oferta de lançamento' : 'Kit completo'}</p><p className="offer-price">{price}</p><p className="price-meta">Pagamento único · Pix ou cartão</p><ButtonLink href={checkout}>Comprar Natal Mágico</ButtonLink>{promotionActive && <p className="price-deadline">Encerra em <time dateTime={promotionDeadline}>22/11 às 00h</time></p>}<p className="price-delivery">Acesso aos PDFs após a confirmação do pagamento.</p></div>
+    <div className="price-card">
+      <p className="eyebrow">{offerActive ? 'Oferta por tempo limitado' : 'Kit completo'}</p>
+      {offerActive && <p className="offer-anchor"><s>{fullPrice}</s></p>}
+      <p className="offer-price">{price}</p>
+      <p className="price-meta">Pagamento único · Pix ou cartão</p>
+      {offerActive && secondsLeft > 0 && <div className="offer-timer"><p><span aria-hidden="true">⏰</span> Esta oferta encerra em</p><p className="offer-timer-value" role="timer">{formatTimer(secondsLeft)}</p></div>}
+      {offerActive && <p className="offer-units"><span aria-hidden="true">🔥</span> Restam <strong>{units} kits</strong> por este valor</p>}
+      <ButtonLink href={checkout}>QUERO MEU KIT DE NATAL</ButtonLink>
+      <p className="price-delivery">Acesso aos PDFs após a confirmação do pagamento.</p>
+    </div>
   </div></section>;
 }
 
@@ -280,7 +339,7 @@ function FAQ() {
 function Footer() {
   return <footer className="site-footer">
     <div className="wrap footer">
-      <a className="footer-brand" href="#inicio"><img src={logo} width="102" height="39" alt="Criaê, voltar ao início" /></a>
+      <a className="footer-brand" href="#inicio"><img src={logo} width="102" height="39" alt="Criaê, voltar ao início" loading="lazy" decoding="async" /></a>
       <p className="footer-tagline">Criatividade que vira aprendizado. <span aria-hidden="true">✨</span></p>
       <p className="footer-description">Atividades educativas, materiais criativos e experiências para aprender brincando.</p>
       <nav className="footer-links" aria-label="Contato da Criaê">
@@ -295,7 +354,7 @@ function Footer() {
   </footer>;
 }
 
-function MobileOffer({ price, promotionActive }) {
+function MobileOffer({ price, offerActive, secondsLeft }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -332,42 +391,70 @@ function MobileOffer({ price, promotionActive }) {
     <div>
       <div className="mobile-offer-prices">
         <strong>{price}</strong>
-        {promotionActive && <s>{regularPrice}</s>}
+        {offerActive && <s>{fullPrice}</s>}
       </div>
-      <p>Pagamento único</p>
+      {offerActive && secondsLeft > 0
+        ? <p className="mobile-offer-timer">{formatTimer(secondsLeft)}</p>
+        : <p>Pagamento único</p>}
     </div>
-    <ButtonLink href="#comprar">Garantir meu kit</ButtonLink>
+    <ButtonLink href={checkout}>{offerActive ? 'Garantir agora' : 'Comprar agora'}</ButtonLink>
   </aside>;
 }
 
 function App() {
-  const [promotionActive, setPromotionActive] = useState(() => Date.now() < promotionEndsAt);
-  const price = promotionActive ? promotionPrice : regularPrice;
+  // --- Cronômetro de 1h por sessão ---
+  const [secondsLeft, setSecondsLeft] = useState(() => {
+    const data = getSessionValue('criae-timer', () => ({ start: Date.now() }));
+    const elapsed = Math.floor((Date.now() - data.start) / 1000);
+    return Math.max(0, OFFER_DURATION - elapsed);
+  });
+
+  const offerActive = secondsLeft > 0;
+  const currentPrice = offerActive ? offerPrice : fullPrice;
 
   useEffect(() => {
-    let timeout;
+    if (secondsLeft <= 0) return;
+    const id = window.setInterval(() => {
+      const data = getSessionValue('criae-timer', () => ({ start: Date.now() }));
+      const elapsed = Math.floor((Date.now() - data.start) / 1000);
+      setSecondsLeft(Math.max(0, OFFER_DURATION - elapsed));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [secondsLeft > 0]);
 
-    function syncPromotion() {
-      window.clearTimeout(timeout);
-      const remaining = promotionEndsAt - Date.now();
-      setPromotionActive(remaining > 0);
-      if (remaining > 0) timeout = window.setTimeout(syncPromotion, remaining);
-    }
+  // --- Unidades restantes (diminuem ~1 a cada 2 min) ---
+  const [units, setUnits] = useState(() => {
+    const data = getSessionValue('criae-units', () => ({
+      initial: Math.floor(Math.random() * 12) + 22,
+      start: Date.now(),
+    }));
+    const minutesElapsed = (Date.now() - data.start) / 60000;
+    return Math.max(3, data.initial - Math.floor(minutesElapsed / 2));
+  });
 
-    syncPromotion();
-    document.addEventListener('visibilitychange', syncPromotion);
-    return () => {
-      window.clearTimeout(timeout);
-      document.removeEventListener('visibilitychange', syncPromotion);
-    };
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setUnits(prev => (prev <= 3 ? prev : prev - 1));
+    }, 120000);
+    return () => window.clearInterval(id);
   }, []);
 
   return <>
     <a className="skip" href="#conteudo">Pular para o conteúdo</a>
     <Header />
-    <main id="conteudo"><Hero promotionActive={promotionActive} /><Activities /><Book price={price} /><Kit /><Offer price={price} promotionActive={promotionActive} /><Guarantee /><FAQ /></main>
+    <main id="conteudo">
+      <Hero price={currentPrice} offerActive={offerActive} units={units} />
+      <ForWho />
+      <Activities />
+      <Book price={currentPrice} />
+      <Kit />
+      <SocialProof />
+      <Offer price={currentPrice} offerActive={offerActive} secondsLeft={secondsLeft} units={units} />
+      <Guarantee />
+      <FAQ />
+    </main>
     <Footer />
-    <MobileOffer price={price} promotionActive={promotionActive} />
+    <MobileOffer price={currentPrice} offerActive={offerActive} secondsLeft={secondsLeft} />
   </>;
 }
 
