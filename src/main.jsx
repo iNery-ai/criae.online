@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import heroImage from '../assets/ui/hero.webp';
+import hero480 from '../assets/ui/hero-480.webp';
+import hero800 from '../assets/ui/hero-800.webp';
+import hero1200 from '../assets/ui/hero-1200.webp';
 import logo from '../assets/ui/logo.webp';
 import globeImage from '../assets/ui/globo.webp';
 import memoryImage from '../assets/ui/memoria.webp';
@@ -119,7 +121,16 @@ function Hero({ price, offerActive, units }) {
           <p className="hero-description">São <strong>40 atividades natalinas criadas para crianças de 3 a 8 anos</strong> — jogos, recortes, montagens e até um calendário do Advento. Você baixa, imprime e a diversão começa. Ideal para mães, pais e professoras que querem um Natal criativo sem complicação.</p>
         </div>
         <figure className="hero-picture">
-          <img src={heroImage} width="867" height="1540" alt="Capa do Natal Mágico e folhas do jogo da memória, do globo de Natal e de ligue os pontos sobre uma mesa" fetchPriority="high" decoding="async" />
+          <img
+            src={hero800}
+            srcSet={`${hero480} 480w, ${hero800} 800w, ${hero1200} 1200w`}
+            sizes="(max-width: 42rem) 92vw, (max-width: 64rem) 40vw, 416px"
+            width="867"
+            height="1540"
+            alt="Capa do Natal Mágico e folhas do jogo da memória, do globo de Natal e de ligue os pontos sobre uma mesa"
+            fetchPriority="high"
+            decoding="async"
+          />
           <figcaption>Prévia do caderno</figcaption>
         </figure>
         <div className="hero-purchase">
