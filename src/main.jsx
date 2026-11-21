@@ -13,6 +13,7 @@ import page3 from '../assets/ui/atividade-03.webp';
 import page4 from '../assets/ui/atividade-04.webp';
 import page5 from '../assets/ui/atividade-05.webp';
 import page6 from '../assets/ui/atividade-06.webp';
+import { trackMetaEvent } from './tracker.js';
 import './styles.css';
 
 const checkout = 'https://pay.kiwify.com.br/K1eUYmk';
@@ -21,6 +22,17 @@ const whatsapp = `https://wa.me/5575983378022?text=${encodeURIComponent('Olá! T
 const offerPrice = 'R$ 17,90';
 const fullPrice = 'R$ 47,90';
 const OFFER_DURATION = 3600; // 1 hora em segundos
+
+export function handleCheckout(origin = 'Geral') {
+  trackMetaEvent('InitiateCheckout', {
+    content_name: 'Natal Mágico — 40 atividades para imprimir',
+    content_category: 'Atividades Infantis',
+    content_type: 'product',
+    currency: 'BRL',
+    value: 17.90,
+    origin
+  });
+}
 
 const pages = [
   { title: 'Capa', image: page1 },
@@ -88,7 +100,7 @@ function Header() {
           <a href="#kit">Dentro do kit</a>
           <a href="#duvidas">Dúvidas</a>
         </nav>
-        <a className="header-cta" href={checkout}>
+        <a className="header-cta" href={checkout} onClick={() => handleCheckout('Cabecalho')}>
           <span>Quero meu kit</span>
           <span className="cta-arrow" aria-hidden="true">↓</span>
         </a>
@@ -112,7 +124,7 @@ function Hero({ price, offerActive, units }) {
         </figure>
         <div className="hero-purchase">
           <div className="hero-actions">
-            <ButtonLink href={checkout}>QUERO AS 40 ATIVIDADES</ButtonLink>
+            <ButtonLink href={checkout} onClick={() => handleCheckout('Hero')}>QUERO AS 40 ATIVIDADES</ButtonLink>
             <p className="hero-meta">Acesso imediato <span aria-hidden="true">•</span> Material digital <span aria-hidden="true">•</span> Pronto para imprimir</p>
           </div>
           <div className="hero-pricing">
@@ -209,7 +221,7 @@ function Book({ price }) {
               <p className="eyebrow">A partir da página 7</p>
               <h3 tabIndex={-1} ref={lockHeading}>Continue com o kit completo.</h3>
               <p>Leve as 40 atividades, a versão econômica e o Kit Personalizado.</p>
-              <ButtonLink href={checkout}>Acessar o kit completo</ButtonLink>
+              <ButtonLink href={checkout} onClick={() => handleCheckout('Livro Bloqueado')}>Acessar o kit completo</ButtonLink>
               <small>{price} · pagamento único</small>
             </div> : <button className="sheet-image" type="button" onClick={() => dialog.current.showModal()} aria-label={`Ampliar página ${index + 1}: ${currentPage.title}`}>
               <img src={currentPage.image} alt={currentPage.title} width="743" height="1050" loading="lazy" decoding="async" />
@@ -316,7 +328,7 @@ function Offer({ price, offerActive, secondsLeft, units }) {
       <p className="price-meta">Pagamento único · Pix ou cartão</p>
       {offerActive && secondsLeft > 0 && <div className="offer-timer"><p><span aria-hidden="true">⏰</span> Esta oferta encerra em</p><p className="offer-timer-value" role="timer">{formatTimer(secondsLeft)}</p></div>}
       {offerActive && <p className="offer-units"><span aria-hidden="true">🔥</span> Restam <strong>{units} kits</strong> por este valor</p>}
-      <ButtonLink href={checkout}>QUERO MEU KIT DE NATAL</ButtonLink>
+      <ButtonLink href={checkout} onClick={() => handleCheckout('Oferta Principal')}>QUERO MEU KIT DE NATAL</ButtonLink>
       <p className="price-delivery">Acesso aos PDFs após a confirmação do pagamento.</p>
     </div>
   </div></section>;
@@ -397,7 +409,7 @@ function MobileOffer({ price, offerActive, secondsLeft }) {
         ? <p className="mobile-offer-timer">{formatTimer(secondsLeft)}</p>
         : <p>Pagamento único</p>}
     </div>
-    <ButtonLink href={checkout}>{offerActive ? 'Garantir agora' : 'Comprar agora'}</ButtonLink>
+    <ButtonLink href={checkout} onClick={() => handleCheckout('Barra Mobile Fixa')}>{offerActive ? 'Garantir agora' : 'Comprar agora'}</ButtonLink>
   </aside>;
 }
 
@@ -437,6 +449,12 @@ function App() {
       setUnits(prev => (prev <= 3 ? prev : prev - 1));
     }, 120000);
     return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    // Sincroniza PageView no servidor (Conversions API) com o mesmo eventID gerado no Pixel do navegador
+    const initialPvId = typeof window !== 'undefined' ? window._initialPageViewId : null;
+    trackMetaEvent('PageView', {}, {}, initialPvId);
   }, []);
 
   return <>

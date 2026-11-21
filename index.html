@@ -22,7 +22,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Nunito:wght@400;600;700;800;900&display=swap">
     </noscript>
 
-    <!-- Meta Pixel -->
+    <!-- Meta Pixel com eventID compartilhado para Deduplicação com a Conversions API -->
     <script>
       (function (window, document) {
         if (window.fbq) return;
@@ -45,8 +45,11 @@
         script.src = 'https://connect.facebook.net/en_US/fbevents.js';
         document.head.appendChild(script);
 
+        const pageViewId = 'pv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+        window._initialPageViewId = pageViewId;
+
         fbq('init', '2278057266394112');
-        fbq('track', 'PageView');
+        fbq('track', 'PageView', {}, { eventID: pageViewId });
       })(window, document);
     </script>
   </head>
