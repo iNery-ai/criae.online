@@ -8,12 +8,9 @@
     <title>Natal Mágico — Kit de Atividades de Natal para Imprimir | Criaê</title>
     <link rel="icon" type="image/png" sizes="64x64" href="/assets/ui/favicon.png">
 
-    <!-- Preconnect & DNS-Prefetch para aceleração de conexões críticas -->
+    <!-- Preconnect crítico para web fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://connect.facebook.net">
-    <link rel="dns-prefetch" href="https://www.facebook.com">
-    <link rel="preconnect" href="https://connect.facebook.net" crossorigin>
 
     <!-- Google Fonts assíncrono (elimina bloqueio de renderização do FCP) -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Nunito:wght@400;600;700;800;900&display=swap">
@@ -22,7 +19,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Nunito:wght@400;600;700;800;900&display=swap">
     </noscript>
 
-    <!-- Meta Pixel com eventID compartilhado para Deduplicação com a Conversions API -->
+    <!-- Meta Pixel com fila em memória imediata e carregamento do script fbevents.js atrasado (interação/ociosidade) -->
     <script>
       (function (window, document) {
         if (window.fbq) return;
@@ -40,16 +37,36 @@
         fbq.version = '2.0';
         fbq.queue = [];
 
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://connect.facebook.net/en_US/fbevents.js';
-        document.head.appendChild(script);
-
+        // Fila imediata do PageView com eventID estável para deduplicação com a CAPI
         const pageViewId = 'pv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
         window._initialPageViewId = pageViewId;
 
         fbq('init', '2278057266394112');
         fbq('track', 'PageView', {}, { eventID: pageViewId });
+
+        // Carrega o fbevents.js sob demanda após primeira interação ou quando o navegador estiver ocioso
+        let pixelLoaded = false;
+        function loadPixelScript() {
+          if (pixelLoaded) return;
+          pixelLoaded = true;
+          ['scroll', 'touchstart', 'pointerdown', 'mousemove'].forEach(function (e) {
+            window.removeEventListener(e, loadPixelScript, { passive: true });
+          });
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+          document.head.appendChild(script);
+        }
+
+        ['scroll', 'touchstart', 'pointerdown', 'mousemove'].forEach(function (e) {
+          window.addEventListener(e, loadPixelScript, { passive: true, once: true });
+        });
+
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(function () { setTimeout(loadPixelScript, 2500); });
+        } else {
+          window.addEventListener('load', function () { setTimeout(loadPixelScript, 2500); });
+        }
       })(window, document);
     </script>
   </head>
