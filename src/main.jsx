@@ -6,6 +6,7 @@ import hero1200 from '../assets/ui/hero-1200.webp';
 import logo from '../assets/ui/logo.webp';
 import { trackMetaEvent } from './tracker.js';
 import { handleCheckout, ButtonLink, checkout, offerPrice, fullPrice, OFFER_DURATION, getSessionValue } from './shared.jsx';
+import ExitPopup from './ExitPopup.jsx';
 import './styles.css';
 
 const BelowTheFold = lazy(() => import('./BelowTheFold.jsx'));
@@ -125,6 +126,7 @@ function App() {
         <BelowTheFold currentPrice={currentPrice} offerActive={offerActive} secondsLeft={secondsLeft} units={units} />
       </Suspense>
     </main>
+    <ExitPopup />
   </>;
 }
 

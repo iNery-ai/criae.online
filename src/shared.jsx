@@ -22,6 +22,12 @@ export function getSessionValue(key, initializer) {
 }
 
 export function handleCheckout(origin = 'Geral') {
+  try {
+    sessionStorage.setItem('criae_checkout_clicked', 'true');
+  } catch {}
+  if (typeof window !== 'undefined') {
+    window._criaeCheckoutClicked = true;
+  }
   trackMetaEvent('InitiateCheckout', {
     content_name: 'Natal Mágico — 40 atividades para imprimir',
     content_category: 'Atividades Infantis',
