@@ -31,10 +31,13 @@ export default function ExitPopup() {
   const modalRef = useRef(null);
   const previousActiveElement = useRef(null);
   const exitShownRef = useRef(false);
+  const mountTimeRef = useRef(Date.now());
 
-  // Verifica se o pop-up já foi exibido na sessão ou se usuário já clicou em comprar
+  // Verifica se o pop-up já foi exibido na sessão ou se usuário já clicou em comprar nesta visita
   function canShow() {
     if (exitShownRef.current) return false;
+    // Não exibir nos primeiros 5 segundos após montagem da página
+    if (Date.now() - mountTimeRef.current < 5000) return false;
     try {
       if (sessionStorage.getItem('criae_exit_shown') === 'true') return false;
       if (sessionStorage.getItem('criae_checkout_clicked') === 'true') return false;
@@ -70,69 +73,71 @@ export default function ExitPopup() {
     setIsOpen(false);
   }
 
+  // Permite abrir ou resetar diretamente pelo console para testes rápidos
   useEffect(() => {
-    // 1. Não mostrar nos primeiros 5 segundos após carregar a página
-    let isAllowedTime = false;
-    const timer5s = setTimeout(() => {
-      isAllowedTime = true;
-    }, 5000);
-
-    // 2. DESKTOP: Cursor sai da janela pela parte de cima (barra de abas/endereço)
-    function handleMouseOut(e) {
-      if (!isAllowedTime) return;
-      if (!e.relatedTarget && e.clientY <= 0) {
+    if (typeof window !== 'undefined') {
+      window.openExitOffer = () => {
+        exitShownRef.current = false;
+        try {
+          sessionStorage.removeItem('criae_exit_shown');
+          sessionStorage.removeItem('criae_checkout_clicked');
+        } catch {}
+        mountTimeRef.current = 0;
         openPopup();
-      }
+      };
+      window.resetExitOffer = () => {
+        exitShownRef.current = false;
+        try {
+          sessionStorage.removeItem('criae_exit_shown');
+          sessionStorage.removeItem('criae_checkout_clicked');
+        } catch {}
+        mountTimeRef.current = Date.now();
+      };
     }
+  }, []);
 
+  useEffect(() => {
+    // 1. DESKTOP: Cursor sai da janela pela parte de cima (barra de abas/endereço)
+    // O evento mouseleave NÃO borbulha (non-bubbling), logo precisa ser anexado em document.documentElement
     function handleMouseLeave(e) {
-      if (!isAllowedTime) return;
-      if (e.clientY <= 0) {
+      if (e.clientY <= 25) {
         openPopup();
       }
     }
 
-    // 3. MOBILE: Rolagem rápida para cima após passar de ~30% da página
+    function handleMouseOut(e) {
+      if ((!e.relatedTarget || e.relatedTarget.nodeName === 'HTML') && e.clientY <= 25) {
+        openPopup();
+      }
+    }
+
+    // 2. MOBILE: Rolagem rápida para cima após passar de ~25-30% da página
     let lastScrollY = window.scrollY;
-    let lastScrollTime = Date.now();
-    let maxScrollPercent = 0;
+    let maxScrollY = 0;
 
     function handleScroll() {
-      if (!isAllowedTime) return;
       const currentScrollY = window.scrollY;
-      const now = Date.now();
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-
-      if (docHeight > 0) {
-        const percent = (currentScrollY / docHeight) * 100;
-        if (percent > maxScrollPercent) {
-          maxScrollPercent = percent;
-        }
+      if (currentScrollY > maxScrollY) {
+        maxScrollY = currentScrollY;
       }
 
-      const dt = now - lastScrollTime;
-      const dy = currentScrollY - lastScrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const percentPassed = docHeight > 0 ? (maxScrollY / docHeight) * 100 : 0;
 
-      // Se passou de ~28-30% da página e deu um scroll rápido para cima
-      if (maxScrollPercent >= 28 && dt > 0 && dt < 250) {
-        const speed = Math.abs(dy) / dt;
-        if (dy < -60 && speed > 0.6) {
-          openPopup();
-        }
+      // Se passou de ~25% da página e está rolando para cima com firmeza (> 45px de delta)
+      if (percentPassed >= 25 && (lastScrollY - currentScrollY) > 45) {
+        openPopup();
       }
 
       lastScrollY = currentScrollY;
-      lastScrollTime = now;
     }
 
-    // 4. INATIVIDADE: 40 segundos sem interação
+    // 3. INATIVIDADE: 40 segundos sem interação
     let inactivityTimer = null;
     function resetInactivity() {
       if (inactivityTimer) clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(() => {
-        if (isAllowedTime) {
-          openPopup();
-        }
+        openPopup();
       }, 40000);
     }
 
@@ -142,15 +147,14 @@ export default function ExitPopup() {
     });
     resetInactivity();
 
+    document.documentElement.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseout', handleMouseOut);
-    document.addEventListener('mouseleave', handleMouseLeave);
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      clearTimeout(timer5s);
       if (inactivityTimer) clearTimeout(inactivityTimer);
+      document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseout', handleMouseOut);
-      document.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('scroll', handleScroll);
       activityEvents.forEach((evt) => {
         window.removeEventListener(evt, resetInactivity);
@@ -158,7 +162,7 @@ export default function ExitPopup() {
     };
   }, []);
 
-  // Foco acessível (focus trap), bloqueio de rolagem do body e suporte a tecla ESC
+  // Foco acessível (focus trap), bloqueio de rolagem do body e tecla ESC
   useEffect(() => {
     if (!isOpen) {
       document.body.style.overflow = '';
@@ -170,12 +174,17 @@ export default function ExitPopup() {
 
     document.body.style.overflow = 'hidden';
 
-    // Foca o primeiro elemento focável do pop-up
-    const focusableElements = modalRef.current?.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    if (focusableElements && focusableElements.length > 0) {
-      focusableElements[0].focus();
+    // Foca o botão principal de CTA ao abrir para máxima clareza e acessibilidade
+    const ctaBtn = modalRef.current?.querySelector('.exit-cta-btn');
+    if (ctaBtn) {
+      ctaBtn.focus();
+    } else {
+      const focusableElements = modalRef.current?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements && focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
     }
 
     function handleKeyDown(e) {
