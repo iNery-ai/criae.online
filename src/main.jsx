@@ -12,39 +12,23 @@ import './styles.css';
 const BelowTheFold = lazy(() => import('./BelowTheFold.jsx'));
 
 function Header() {
-  return <header className="site-header" id="inicio">
-    <div className="top-bar">
-      <div className="wrap top-bar-inner">
-        <p>🎁 Atividades de Natal prontas para imprimir</p>
-      </div>
-    </div>
-    <div className="nav-bar">
-      <div className="wrap nav">
-        <a className="brand" href="#inicio" aria-label="Criaê - Voltar ao início">
-          <img src={logo} alt="Criaê" width="102" height="39" decoding="async" />
-        </a>
-        <nav aria-label="Navegação principal">
-          <a href="#caderno">Folhear</a>
-          <a href="#kit">Dentro do kit</a>
-          <a href="#duvidas">Dúvidas</a>
-        </nav>
-        <a className="header-cta" href={checkout} onClick={() => handleCheckout('Cabecalho')}>
-          <span>Quero meu kit</span>
-          <span className="cta-arrow" aria-hidden="true">↓</span>
-        </a>
-      </div>
+  return <header className="site-header site-header--clean" id="inicio">
+    <div className="wrap nav nav--clean">
+      <a className="brand" href="#inicio" aria-label="Criaê - Voltar ao início">
+        <img src={logo} alt="Criaê" width="102" height="39" decoding="async" />
+      </a>
     </div>
   </header>;
 }
 
-function Hero({ price, offerActive, units }) {
+function Hero({ price }) {
   return <>
     <section className="hero" aria-labelledby="hero-title">
       <div className="wrap hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow"><span aria-hidden="true">✦</span> Natal Mágico da Criaê</p>
-          <h1 id="hero-title">Atividades de Natal prontas para imprimir, colorir e brincar. <em>Sem preparação. Só alegria!</em></h1>
-          <p className="hero-description">São <strong>40 atividades natalinas criadas para crianças de 3 a 8 anos</strong> — jogos, recortes, montagens e até um calendário do Advento. Você baixa, imprime e a diversão começa. Ideal para mães, pais e professoras que querem um Natal criativo sem complicação.</p>
+          <p className="eyebrow eyebrow--product">NATAL MÁGICO</p>
+          <h1 id="hero-title">40 atividades de Natal<br />para imprimir hoje</h1>
+          <p className="hero-description">Crianças de 3 a 8 anos. Baixe o PDF, imprima e pronto.</p>
         </div>
         <figure className="hero-picture">
           <img
@@ -53,21 +37,17 @@ function Hero({ price, offerActive, units }) {
             sizes="(max-width: 42rem) 92vw, (max-width: 64rem) 40vw, 416px"
             width="867"
             height="1540"
-            alt="Capa do Natal Mágico e folhas do jogo da memória, do globo de Natal e de ligue os pontos sobre uma mesa"
+            alt="Folhas do kit Natal Mágico para imprimir sobre a mesa"
             fetchPriority="high"
             decoding="async"
           />
-          <figcaption>Prévia do caderno</figcaption>
         </figure>
         <div className="hero-purchase">
           <div className="hero-actions">
-            <ButtonLink href={checkout} onClick={() => handleCheckout('Hero')}>QUERO AS 40 ATIVIDADES</ButtonLink>
-            <p className="hero-meta">Acesso imediato <span aria-hidden="true">•</span> Material digital <span aria-hidden="true">•</span> Pronto para imprimir</p>
-          </div>
-          <div className="hero-pricing">
-            {offerActive && <p className="hero-anchor"><s>{fullPrice}</s></p>}
-            <p className="hero-price">{price} <span>· pagamento único</span></p>
-            {offerActive && <p className="hero-units"><span aria-hidden="true">🔥</span> Restam apenas <strong>{units} kits</strong> por este valor</p>}
+            <ButtonLink href={checkout} onClick={() => handleCheckout('Hero')} className="button button--primary button--hero">
+              QUERO O NATAL MÁGICO · {price}
+            </ButtonLink>
+            <p className="hero-meta">PDF · Acesso imediato · Pix ou cartão</p>
           </div>
         </div>
       </div>
@@ -121,7 +101,7 @@ function App() {
     <a className="skip" href="#conteudo">Pular para o conteúdo</a>
     <Header />
     <main id="conteudo">
-      <Hero price={currentPrice} offerActive={offerActive} units={units} />
+      <Hero price={currentPrice} />
       <Suspense fallback={null}>
         <BelowTheFold currentPrice={currentPrice} offerActive={offerActive} secondsLeft={secondsLeft} units={units} />
       </Suspense>
