@@ -97,68 +97,42 @@ export default function ExitPopup() {
   }, []);
 
   useEffect(() => {
-    // 1. DESKTOP: Cursor sai da janela pela parte de cima (barra de abas/endereço)
-    // O evento mouseleave NÃO borbulha (non-bubbling), logo precisa ser anexado em document.documentElement
+    // 1. CLICAR EM VOLTAR (Navegador Desktop / Gesto de voltar Mobile)
+    try {
+      window.history.pushState({ exitOfferPending: true }, '', window.location.href);
+    } catch {}
+
+    function handlePopState() {
+      if (canShow()) {
+        try {
+          window.history.pushState({ exitOfferShown: true }, '', window.location.href);
+        } catch {}
+        openPopup();
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState);
+
+    // 2. TENTAR FECHAR A PÁGINA (Desktop: cursor saindo pelo topo em direção à aba/fechar)
     function handleMouseLeave(e) {
-      if (e.clientY <= 25) {
+      if (e.clientY <= 20) {
         openPopup();
       }
     }
 
     function handleMouseOut(e) {
-      if ((!e.relatedTarget || e.relatedTarget.nodeName === 'HTML') && e.clientY <= 25) {
+      if ((!e.relatedTarget || e.relatedTarget.nodeName === 'HTML') && e.clientY <= 20) {
         openPopup();
       }
     }
-
-    // 2. MOBILE: Rolagem rápida para cima após passar de ~25-30% da página
-    let lastScrollY = window.scrollY;
-    let maxScrollY = 0;
-
-    function handleScroll() {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > maxScrollY) {
-        maxScrollY = currentScrollY;
-      }
-
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const percentPassed = docHeight > 0 ? (maxScrollY / docHeight) * 100 : 0;
-
-      // Se passou de ~25% da página e está rolando para cima com firmeza (> 45px de delta)
-      if (percentPassed >= 25 && (lastScrollY - currentScrollY) > 45) {
-        openPopup();
-      }
-
-      lastScrollY = currentScrollY;
-    }
-
-    // 3. INATIVIDADE: 40 segundos sem interação
-    let inactivityTimer = null;
-    function resetInactivity() {
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        openPopup();
-      }, 40000);
-    }
-
-    const activityEvents = ['mousemove', 'pointerdown', 'touchstart', 'keydown', 'scroll'];
-    activityEvents.forEach((evt) => {
-      window.addEventListener(evt, resetInactivity, { passive: true });
-    });
-    resetInactivity();
 
     document.documentElement.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseout', handleMouseOut);
-    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      if (inactivityTimer) clearTimeout(inactivityTimer);
+      window.removeEventListener('popstate', handlePopState);
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseout', handleMouseOut);
-      window.removeEventListener('scroll', handleScroll);
-      activityEvents.forEach((evt) => {
-        window.removeEventListener(evt, resetInactivity);
-      });
     };
   }, []);
 
