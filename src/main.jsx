@@ -27,8 +27,8 @@ function Hero({ price }) {
       <div className="wrap hero-grid">
         <div className="hero-copy">
           <p className="eyebrow eyebrow--product">NATAL MÁGICO</p>
-          <h1 id="hero-title">Natal Mágico: 40 atividades para imprimir e deixar o Natal mais leve</h1>
-          <p className="hero-description">Imprima em A4 e comece em 5 minutos. Natal sem tela, sem preparação.</p>
+          <h1 id="hero-title">40 atividades de Natal para imprimir e começar em 5 minutos</h1>
+          <p className="hero-description">Crianças de 3 a 8 anos. Baixe o PDF em A4, imprima e viva um Natal leve, divertido e sem telas.</p>
         </div>
         <figure className="hero-picture">
           <img
@@ -47,17 +47,17 @@ function Hero({ price }) {
             <ButtonLink href={checkout} onClick={() => handleCheckout('Hero')} className="button button--primary button--hero">
               QUERO O NATAL MÁGICO · {price}
             </ButtonLink>
-            <p className="hero-meta">PDF · Acesso imediato · Pix ou cartão</p>
-            <p className="hero-license">Uso pessoal: imprima quantas cópias precisar em casa ou em sala de aula.</p>
+            <p className="hero-meta">PDF digital · Acesso imediato no e-mail · Pix ou cartão</p>
+            <p className="hero-license">Uso liberado para imprimir em casa ou na sala de aula.</p>
           </div>
         </div>
       </div>
     </section>
     <div className="quick-facts">
       <ul className="wrap" aria-label="Benefícios do Natal Mágico">
-        <li><b>40</b> atividades + bônus</li>
+        <li><b>40</b> atividades prontas</li>
         <li><b>3 a 8</b> anos</li>
-        <li><b>PDF</b> em A4</li>
+        <li><b>PDF</b> em folha A4</li>
         <li><b>5 min</b> para começar</li>
       </ul>
     </div>
