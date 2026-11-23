@@ -1,11 +1,11 @@
-import React, { useEffect, useState, lazy, Suspense } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import hero480 from '../assets/ui/hero-480.webp';
 import hero800 from '../assets/ui/hero-800.webp';
 import hero1200 from '../assets/ui/hero-1200.webp';
 import logo from '../assets/ui/logo.webp';
 import { trackMetaEvent } from './tracker.js';
-import { handleCheckout, ButtonLink, checkout, offerPrice, fullPrice, OFFER_DURATION, getSessionValue } from './shared.jsx';
+import { handleCheckout, ButtonLink, checkout, offerPrice } from './shared.jsx';
 import ExitPopup from './ExitPopup.jsx';
 import './styles.css';
 
@@ -27,8 +27,8 @@ function Hero({ price }) {
       <div className="wrap hero-grid">
         <div className="hero-copy">
           <p className="eyebrow eyebrow--product">NATAL MÁGICO</p>
-          <h1 id="hero-title">40 atividades de Natal<br />para imprimir hoje</h1>
-          <p className="hero-description">Crianças de 3 a 8 anos. Baixe o PDF, imprima e pronto.</p>
+          <h1 id="hero-title">Natal Mágico: 40 atividades para imprimir e deixar o Natal mais leve</h1>
+          <p className="hero-description">Imprima em A4 e comece em 5 minutos. Natal sem tela, sem preparação.</p>
         </div>
         <figure className="hero-picture">
           <img
@@ -48,49 +48,24 @@ function Hero({ price }) {
               QUERO O NATAL MÁGICO · {price}
             </ButtonLink>
             <p className="hero-meta">PDF · Acesso imediato · Pix ou cartão</p>
+            <p className="hero-license">Uso pessoal: imprima quantas cópias precisar em casa ou em sala de aula.</p>
           </div>
         </div>
       </div>
     </section>
-    <div className="quick-facts"><ul className="wrap" aria-label="Benefícios do Natal Mágico"><li><b>40</b> atividades prontas</li><li><b>3 a 8</b> anos</li><li><b>PDF</b> em A4</li></ul></div>
+    <div className="quick-facts">
+      <ul className="wrap" aria-label="Benefícios do Natal Mágico">
+        <li><b>40</b> atividades + bônus</li>
+        <li><b>3 a 8</b> anos</li>
+        <li><b>PDF</b> em A4</li>
+        <li><b>5 min</b> para começar</li>
+      </ul>
+    </div>
   </>;
 }
 
 function App() {
-  const [secondsLeft, setSecondsLeft] = useState(() => {
-    const data = getSessionValue('criae-timer', () => ({ start: Date.now() }));
-    const elapsed = Math.floor((Date.now() - data.start) / 1000);
-    return Math.max(0, OFFER_DURATION - elapsed);
-  });
-
-  const offerActive = secondsLeft > 0;
-  const currentPrice = offerActive ? offerPrice : fullPrice;
-
-  useEffect(() => {
-    if (secondsLeft <= 0) return;
-    const id = window.setInterval(() => {
-      const data = getSessionValue('criae-timer', () => ({ start: Date.now() }));
-      const elapsed = Math.floor((Date.now() - data.start) / 1000);
-      setSecondsLeft(Math.max(0, OFFER_DURATION - elapsed));
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, [secondsLeft > 0]);
-
-  const [units, setUnits] = useState(() => {
-    const data = getSessionValue('criae-units', () => ({
-      initial: Math.floor(Math.random() * 12) + 22,
-      start: Date.now(),
-    }));
-    const minutesElapsed = (Date.now() - data.start) / 60000;
-    return Math.max(3, data.initial - Math.floor(minutesElapsed / 2));
-  });
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setUnits(prev => (prev <= 3 ? prev : prev - 1));
-    }, 120000);
-    return () => window.clearInterval(id);
-  }, []);
+  const currentPrice = offerPrice;
 
   useEffect(() => {
     const initialPvId = typeof window !== 'undefined' ? window._initialPageViewId : null;
@@ -103,7 +78,7 @@ function App() {
     <main id="conteudo">
       <Hero price={currentPrice} />
       <Suspense fallback={null}>
-        <BelowTheFold currentPrice={currentPrice} offerActive={offerActive} secondsLeft={secondsLeft} units={units} />
+        <BelowTheFold currentPrice={currentPrice} />
       </Suspense>
     </main>
     <ExitPopup />
