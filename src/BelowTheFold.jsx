@@ -5,6 +5,9 @@ import page3 from '../assets/ui/atividade-03.webp';
 import page4 from '../assets/ui/atividade-04.webp';
 import page5 from '../assets/ui/atividade-05.webp';
 import page6 from '../assets/ui/atividade-06.webp';
+import testimonialAna from '../assets/ui/depoimento-ana.jpg';
+import testimonialCarla from '../assets/ui/depoimento-carla.jpg';
+import testimonialJuliana from '../assets/ui/depoimento-juliana.jpg';
 import logo from '../assets/ui/logo.webp';
 import { handleCheckout, ButtonLink, checkout, instagram, whatsapp } from './shared.jsx';
 
@@ -15,6 +18,30 @@ const samplePages = [
   { title: 'Calendário de Advento', image: page4 },
   { title: 'A Turma do Natal', image: page5 },
   { title: 'Meu Globo de Natal', image: page6 },
+];
+
+const testimonialsList = [
+  {
+    name: 'Ana Costa',
+    role: 'Mãe',
+    image: testimonialAna,
+    alt: 'Mensagem no WhatsApp de Ana Costa elogiando o Calendário de Advento do Natal Mágico',
+    highlight: '“O calendário do Advento foi um sucesso aqui em casa... uma das melhores comprinhas pro Natal deles.”',
+  },
+  {
+    name: 'Profª Carla',
+    role: 'Educação Infantil',
+    image: testimonialCarla,
+    alt: 'Mensagem no WhatsApp da Professora Carla relatando sucesso com a turma inteira de alunos',
+    highlight: '“Usei com a turma inteira e foi um sucesso. As crianças ficaram encantadas... Prático, bonito e muito bem pensado.”',
+  },
+  {
+    name: 'Juliana Moreira',
+    role: 'Mãe de 3',
+    image: testimonialJuliana,
+    alt: 'Mensagem no WhatsApp de Juliana Moreira elogiando o kit personalizado com nome das crianças',
+    highlight: '“O kit com o nome deles foi o ponto alto. Eles se sentiram muito especiais... dá pra ver o carinho em cada detalhe.”',
+  },
 ];
 
 const faqList = [
@@ -207,7 +234,47 @@ export function BookSample({ price }) {
   );
 }
 
-/* 3. Como funciona (3 passos rápidos) */
+/* 3. Depoimentos reais de quem já usou */
+export function Testimonials() {
+  return (
+    <section className="section testimonials-section" id="depoimentos" aria-labelledby="testimonials-title">
+      <div className="wrap">
+        <div className="section-heading section-heading--center">
+          <p className="eyebrow">Quem já usou</p>
+          <h2 id="testimonials-title">O que dizem as famílias e professoras</h2>
+          <p>Mensagens reais de quem já baixou, imprimiu e brincou com o Natal Mágico:</p>
+        </div>
+
+        <div className="testimonials-grid">
+          {testimonialsList.map((t) => (
+            <figure key={t.name} className="testimonial-card">
+              <div className="testimonial-user">
+                <strong>{t.name}</strong>
+                <span>{t.role}</span>
+              </div>
+              <div className="testimonial-frame">
+                <img
+                  src={t.image}
+                  alt={t.alt}
+                  width="576"
+                  height="1024"
+                  loading="lazy"
+                  decoding="async"
+                  className="testimonial-img"
+                />
+              </div>
+              <figcaption className="testimonial-caption">
+                <p>{t.highlight}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* 4. Como funciona (3 passos rápidos) */
 export function HowItWorks() {
   return (
     <section className="section how-it-works" id="como-funciona" aria-labelledby="how-it-works-title">
@@ -238,7 +305,7 @@ export function HowItWorks() {
   );
 }
 
-/* 4. Dúvidas frequentes */
+/* 5. Dúvidas frequentes */
 export function FAQ() {
   return (
     <section className="section faq" id="duvidas" aria-labelledby="faq-title">
@@ -261,7 +328,7 @@ export function FAQ() {
   );
 }
 
-/* 5. Oferta Final & Garantia */
+/* 6. Oferta Final & Garantia */
 export function FinalCTA({ price }) {
   return (
     <section className="section final-cta" id="comprar" aria-labelledby="cta-title">
@@ -374,13 +441,16 @@ export default function BelowTheFold({ currentPrice }) {
       {/* 2. Amostra real folheável */}
       <BookSample price={currentPrice} />
 
-      {/* 3. Como funciona */}
+      {/* 3. Depoimentos reais */}
+      <Testimonials />
+
+      {/* 4. Como funciona */}
       <HowItWorks />
 
-      {/* 4. FAQ */}
+      {/* 5. FAQ */}
       <FAQ />
 
-      {/* 5. Oferta final */}
+      {/* 6. Oferta final */}
       <FinalCTA price={currentPrice} />
 
       {/* Rodapé */}

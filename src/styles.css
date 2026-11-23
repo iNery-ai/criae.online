@@ -32,7 +32,7 @@ button:not(:disabled), summary { cursor: pointer; }
 .section { padding-block: clamp(3.5rem, 6.5vw, 5.5rem); }
 
 /* Performance offscreen */
-.what-you-get, .preview, .how-it-works, .faq, .final-cta, .site-footer {
+.what-you-get, .preview, .testimonials-section, .how-it-works, .faq, .final-cta, .site-footer {
   content-visibility: auto;
   contain-intrinsic-size: auto 500px;
 }
@@ -139,7 +139,20 @@ button:not(:disabled), summary { cursor: pointer; }
 .zoom img { width: 100%; height: auto; }
 body:has(.zoom[open]) { overflow: hidden; }
 
-/* 3. Como funciona */
+/* 3. Depoimentos reais */
+.testimonials-section { background: var(--cream); border-top: 1px solid var(--line); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; align-items: stretch; }
+.testimonial-card { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 1.35rem; padding: 1.25rem; display: flex; flex-direction: column; box-shadow: 0 4px 16px rgba(44, 23, 65, 0.04); transition: transform .18s; }
+.testimonial-card:hover { transform: translateY(-3px); }
+.testimonial-user { display: flex; flex-direction: column; gap: .1rem; margin-bottom: .85rem; padding-bottom: .65rem; border-bottom: 1px solid #f2e9f5; }
+.testimonial-user strong { font-size: 1rem; color: var(--ink); font-weight: 800; }
+.testimonial-user span { font-size: .8rem; font-weight: 700; color: var(--purple); }
+.testimonial-frame { border-radius: .85rem; overflow: hidden; border: 1px solid #e5d8ea; background: #fdfafd; line-height: 0; }
+.testimonial-img { width: 100%; height: auto; display: block; border-radius: inherit; }
+.testimonial-caption { margin-top: .85rem; font-size: .88rem; color: var(--muted); line-height: 1.45; font-style: italic; }
+.testimonial-caption p { margin: 0; }
+
+/* 4. Como funciona */
 .how-it-works { background: var(--cream); }
 .steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
 .step-card { background: #fff; border: 1px solid var(--line); border-radius: 1.35rem; padding: clamp(1.4rem, 3vw, 1.85rem); text-align: center; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 16px rgba(44, 23, 65, 0.03); }
@@ -215,6 +228,7 @@ body:has(.zoom[open]) { overflow: hidden; }
 @media (max-width: 56rem) {
   .packages-grid { grid-template-columns: 1fr; }
   .steps-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; max-width: 24rem; margin-inline: auto; }
   .faq-grid { grid-template-columns: 1fr; }
   .preview-grid { grid-template-columns: 1fr; gap: 1.75rem; }
   .page-list { grid-template-columns: 1fr 1fr; }
