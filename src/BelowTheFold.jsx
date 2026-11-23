@@ -88,10 +88,34 @@ export function WhatYouGet() {
             <span className="package-badge">Material Principal</span>
             <h3>Natal Mágico Completo</h3>
             <p className="package-subtitle">40 atividades em PDF A4</p>
-            <ul className="package-features">
-              <li><b>40 atividades criativas:</b> globo 3D, fantoches de papel, jogo da memória, sombras, labirintos, cartinha ao Noel e cenas com a cara do Brasil para colorir.</li>
-              <li><b>Calendário de Advento:</b> 1 a 24 de dezembro com uma atividade por dia para acompanhar a contagem regressiva até o Natal.</li>
-              <li><b>Guia do adulto & Mapa:</b> orientações práticas com tempo estimado e habilidade em destaque.</li>
+            <ul className="package-stacked-list">
+              <li className="package-stacked-item">
+                <span className="package-item-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                </span>
+                <div className="package-item-content">
+                  <strong className="package-item-title">40 atividades</strong>
+                  <p className="package-item-desc">Globo de papel, fantoches da Turma do Natal, jogo da memória, sombras, labirintos, cartinha ao Noel e cenas com a cara do Brasil para colorir.</p>
+                </div>
+              </li>
+              <li className="package-stacked-item">
+                <span className="package-item-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+                </span>
+                <div className="package-item-content">
+                  <strong className="package-item-title">Calendário de Advento</strong>
+                  <p className="package-item-desc">1 a 24 de dezembro com uma atividade por dia para acompanhar a contagem regressiva até o Natal.</p>
+                </div>
+              </li>
+              <li className="package-stacked-item">
+                <span className="package-item-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+                </span>
+                <div className="package-item-content">
+                  <strong className="package-item-title">Guia do adulto e mapa</strong>
+                  <p className="package-item-desc">Orientações práticas de montagem com tempo estimado e habilidade em destaque.</p>
+                </div>
+              </li>
             </ul>
           </article>
 
@@ -100,9 +124,25 @@ export function WhatYouGet() {
             <span className="package-badge package-badge--green">Gasta menos tinta</span>
             <h3>Versão Econômica</h3>
             <p className="package-subtitle">24 páginas em preto e branco</p>
-            <ul className="package-features">
-              <li><b>Páginas só para colorir:</b> ilustrações em traço limpo P&B pensadas para economizar cartucho.</li>
-              <li><b>Ideal para repetição:</b> imprima cópias extras para irmãos ou para toda a turma na escola.</li>
+            <ul className="package-stacked-list">
+              <li className="package-stacked-item">
+                <span className="package-item-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg>
+                </span>
+                <div className="package-item-content">
+                  <strong className="package-item-title">24 páginas para colorir</strong>
+                  <p className="package-item-desc">Ilustrações em traço limpo preto e branco pensadas para gastar menos tinta de impressora.</p>
+                </div>
+              </li>
+              <li className="package-stacked-item">
+                <span className="package-item-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect width="13" height="13" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                </span>
+                <div className="package-item-content">
+                  <strong className="package-item-title">Economia e repetição</strong>
+                  <p className="package-item-desc">Ideal para imprimir cópias extras para vários irmãos ou para toda a turma de alunos.</p>
+                </div>
+              </li>
             </ul>
           </article>
 
@@ -111,9 +151,25 @@ export function WhatYouGet() {
             <span className="package-badge package-badge--purple">Bônus Exclusivo</span>
             <h3>Kit Personalizado</h3>
             <p className="package-subtitle">12 páginas com o nome da criança</p>
-            <ul className="package-features">
-              <li><b>Itens de Natal:</b> molduras de fotos da Turma do Natal, etiquetas de presente, marcadores de livro e cartões de lugar para a ceia.</li>
-              <li><b>Nome editável no PDF:</b> digite no Adobe Acrobat Reader ou preencha à mão.</li>
+            <ul className="package-stacked-list">
+              <li className="package-stacked-item">
+                <span className="package-item-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="8" width="18" height="14" rx="2"/><path d="M12 8v14M3 12h18M12 8a3 3 0 0 0 0-6 3 3 0 0 0-3 3M12 8a3 3 0 0 1 0-6 3 3 0 0 1 3 3"/></svg>
+                </span>
+                <div className="package-item-content">
+                  <strong className="package-item-title">Lembrancinhas e ceia</strong>
+                  <p className="package-item-desc">Molduras de fotos da Turma do Natal, etiquetas de presente, marcadores e cartões de lugar para a mesa.</p>
+                </div>
+              </li>
+              <li className="package-stacked-item">
+                <span className="package-item-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                </span>
+                <div className="package-item-content">
+                  <strong className="package-item-title">Nome digitável no PDF</strong>
+                  <p className="package-item-desc">Digite direto no PDF pelo Adobe Acrobat Reader no computador/celular ou preencha à mão.</p>
+                </div>
+              </li>
             </ul>
           </article>
         </div>
