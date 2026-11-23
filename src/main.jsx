@@ -48,6 +48,7 @@ function Hero({ price }) {
               QUERO O NATAL MÁGICO · {price}
             </ButtonLink>
             <p className="hero-meta">PDF digital · Acesso imediato no e-mail · Pix ou cartão</p>
+            <p className="hero-guarantee"><span aria-hidden="true">🛡️</span> <b>Garantia de 7 dias:</b> risco zero para você experimentar.</p>
             <p className="hero-license">Uso liberado para imprimir em casa ou na sala de aula.</p>
           </div>
         </div>

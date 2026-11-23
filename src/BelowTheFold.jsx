@@ -417,9 +417,15 @@ export function FinalCTA({ price }) {
 
         <p className="cta-post-meta">Acesso imediato por e-mail · imprima em casa ou na escola</p>
 
-        <div className="guarantee-box-short">
-          <span className="guarantee-icon" aria-hidden="true">🛡️</span>
-          <p>Garantia de 7 dias. Não gostou? Devolvemos 100% do valor.</p>
+        <div className="guarantee-card-impact">
+          <div className="guarantee-seal-badge" aria-hidden="true">
+            <span className="guarantee-seal-num">7</span>
+            <span className="guarantee-seal-txt">DIAS DE<br />GARANTIA</span>
+          </div>
+          <div className="guarantee-card-text">
+            <strong>Risco zero: 7 dias de garantia incondicional</strong>
+            <p>Baixe o kit, imprima e faça as atividades com as crianças. Se você não amar ou achar que não valeu a pena, basta nos avisar em até 7 dias: devolvemos 100% do seu dinheiro, sem burocracia.</p>
+          </div>
         </div>
 
         <div className="help-links">
