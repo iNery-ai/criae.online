@@ -65,6 +65,10 @@ button:not(:disabled), summary { cursor: pointer; }
 .hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); letter-spacing: -.035em; line-height: 1.1; text-wrap: balance; }
 .hero-description { font-size: clamp(1.05rem, 1.8vw, 1.25rem); max-width: 36rem; margin: .85rem auto 0; color: #ede2f8; line-height: 1.45; }
 .hero-purchase { grid-column: 1 / -1; max-width: 30rem; width: 100%; justify-self: center; }
+.hero-pricing-anchor { display: flex; align-items: baseline; justify-content: center; gap: .55rem; margin-bottom: .65rem; }
+.hero-anchor-from { font-size: .95rem; color: #F6EBDD; font-weight: 700; }
+.hero-anchor-from s { color: #ffbcbc; text-decoration: line-through; }
+.hero-anchor-to { font: 600 1.65rem/1 var(--display); color: var(--yellow, #ffde65); letter-spacing: -.02em; }
 .hero-actions .button--hero { width: 100%; min-height: 3.75rem; font-size: clamp(1.02rem, 4vw, 1.18rem); font-weight: 900; letter-spacing: .02em; border-radius: .95rem; padding: .85rem 1.4rem; box-shadow: 0 4px 0 #b28125, 0 8px 20px rgba(0, 0, 0, 0.2); }
 .hero-meta { font-size: .875rem; font-weight: 700; color: #e3d4ee; margin-top: .85rem; text-align: center; }
 .hero-guarantee { font-size: .85rem; color: #F6EBDD; margin-top: .45rem; text-align: center; display: flex; align-items: center; justify-content: center; gap: .35rem; }
@@ -222,7 +226,9 @@ body:has(.zoom[open]) { overflow: hidden; }
 .cta-checklist li { display: flex; align-items: baseline; gap: .75rem; font-size: 1.05rem; font-weight: 700; color: #F6EBDD; line-height: 1.4; }
 .cta-check { color: var(--yellow, #ffde65); font-weight: 900; font-size: 1.15rem; flex-shrink: 0; }
 
-.cta-price-wrap { display: flex; align-items: baseline; justify-content: center; gap: .65rem; margin-top: 1.75rem; margin-bottom: .85rem; }
+.cta-price-wrap { display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: .65rem; margin-top: 1.75rem; margin-bottom: .85rem; }
+.cta-anchor-from { font-size: 1.1rem; font-weight: 700; color: #F6EBDD; }
+.cta-anchor-from s { color: #ffbcbc; text-decoration: line-through; }
 .cta-price-value { font: 600 clamp(2.8rem, 6.5vw, 3.8rem)/1 var(--display); color: var(--yellow, #ffde65); letter-spacing: -.03em; }
 .cta-price-type { font-size: 1rem; font-weight: 700; color: #F6EBDD; }
 
@@ -374,6 +380,8 @@ body:has(.zoom[open]) { overflow: hidden; }
     padding: .6rem 1rem calc(.6rem + env(safe-area-inset-bottom));
     box-shadow: 0 -6px 28px rgba(42, 23, 71, 0.12);
   }
+  .mobile-price-row { display: flex; align-items: baseline; gap: .35rem; line-height: 1.15; }
+  .mobile-price-from { font-size: .8rem; color: #887896; text-decoration: line-through; }
   .mobile-price { color: var(--purple); font: 600 clamp(1.35rem, 5.5vw, 1.65rem)/1.15 var(--display); white-space: nowrap; }
   .mobile-offer p { color: var(--muted); font-size: .75rem; margin-top: .1rem; }
   .mobile-offer .button { flex: none; min-height: 2.75rem; padding-inline: .95rem; font-size: .875rem; }

@@ -5,7 +5,7 @@ import hero800 from '../assets/ui/hero-800.webp';
 import hero1200 from '../assets/ui/hero-1200.webp';
 import logo from '../assets/ui/logo.webp';
 import { trackMetaEvent } from './tracker.js';
-import { handleCheckout, ButtonLink, checkout, offerPrice } from './shared.jsx';
+import { handleCheckout, ButtonLink, checkout, offerPrice, fullPrice } from './shared.jsx';
 import ExitPopup from './ExitPopup.jsx';
 import './styles.css';
 
@@ -43,9 +43,13 @@ function Hero({ price }) {
           />
         </figure>
         <div className="hero-purchase">
+          <div className="hero-pricing-anchor">
+            <span className="hero-anchor-from">De <s>{fullPrice}</s> por apenas</span>
+            <strong className="hero-anchor-to">{price}</strong>
+          </div>
           <div className="hero-actions">
             <ButtonLink href={checkout} onClick={() => handleCheckout('Hero')} className="button button--primary button--hero">
-              QUERO O NATAL MÁGICO · {price}
+              QUERO O NATAL MÁGICO
             </ButtonLink>
             <p className="hero-meta">PDF digital · Acesso imediato no e-mail · Pix ou cartão</p>
             <p className="hero-guarantee"><span aria-hidden="true">🛡️</span> <b>Garantia de 7 dias:</b> risco zero para você experimentar.</p>

@@ -9,7 +9,7 @@ import testimonialAna from '../assets/ui/depoimento-ana.jpg';
 import testimonialCarla from '../assets/ui/depoimento-carla.jpg';
 import testimonialJuliana from '../assets/ui/depoimento-juliana.jpg';
 import logo from '../assets/ui/logo.webp';
-import { handleCheckout, ButtonLink, checkout, instagram, whatsapp } from './shared.jsx';
+import { handleCheckout, ButtonLink, checkout, instagram, whatsapp, fullPrice } from './shared.jsx';
 
 const samplePages = [
   { title: 'Capa', image: page1 },
@@ -407,6 +407,7 @@ export function FinalCTA({ price }) {
         </ul>
 
         <div className="cta-price-wrap">
+          <span className="cta-anchor-from">De <s>{fullPrice}</s> por</span>
           <strong className="cta-price-value">{price}</strong>
           <span className="cta-price-type">pagamento único</span>
         </div>
@@ -497,7 +498,10 @@ export function MobileOffer({ price }) {
   return (
     <aside className="mobile-offer" aria-label="Compra do Natal Mágico">
       <div>
-        <strong className="mobile-price">{price}</strong>
+        <div className="mobile-price-row">
+          <span className="mobile-price-from"><s>{fullPrice}</s></span>
+          <strong className="mobile-price">{price}</strong>
+        </div>
         <p>Acesso imediato no e-mail</p>
       </div>
       <ButtonLink href={checkout} onClick={() => handleCheckout('Barra Mobile Fixa')} className="button button--primary">
