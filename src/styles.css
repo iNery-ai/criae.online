@@ -212,22 +212,29 @@ body:has(.zoom[open]) { overflow: hidden; }
 .faq details p { padding-bottom: 1rem; color: var(--muted); line-height: 1.5; font-size: .95rem; }
 
 /* 5. Oferta Final Clean */
-.final-cta { color: white; background: radial-gradient(ellipse at 50% 0, #4c2472 0%, #261439 85%); text-align: center; }
-.final-cta-clean { max-width: 44rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; }
-.final-cta-clean .eyebrow { color: #dfcbff; }
-.final-cta-clean h2 { font-size: clamp(2.1rem, 4.5vw, 3.2rem); }
-.final-cta-desc { font-size: 1.15rem; color: #ede2f8; margin-top: .75rem; line-height: 1.45; max-width: 34rem; }
-.final-cta-action { margin-top: 1.85rem; width: 100%; max-width: 28rem; display: flex; flex-direction: column; align-items: center; }
-.final-cta-price { font: 600 clamp(3rem, 7vw, 4rem)/1 var(--display); color: var(--yellow); letter-spacing: -.03em; }
-.final-cta-meta { color: #d9c4ee; font-weight: 700; font-size: .88rem; margin: .4rem 0 1.25rem; }
-.final-cta-action .button--hero { width: 100%; min-height: 3.75rem; font-size: clamp(1.05rem, 4vw, 1.2rem); font-weight: 900; border-radius: .95rem; box-shadow: 0 4px 0 #b28125, 0 8px 24px rgba(0, 0, 0, 0.3); }
+.final-cta { color: #F6EBDD; background: radial-gradient(ellipse at 50% 0, #3d1c5c 0%, #2C1741 85%); text-align: center; }
+.final-cta-clean { max-width: 38rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; }
+.final-cta-clean h2 { font-size: clamp(2rem, 4.5vw, 2.85rem); color: #fffaf4; }
 
-.guarantee-badge { margin-top: 2rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: .95rem; padding: .85rem 1.2rem; display: flex; align-items: center; gap: .75rem; text-align: left; max-width: 32rem; font-size: .88rem; color: #f4ecfb; }
-.guarantee-icon { font-size: 1.4rem; flex-shrink: 0; }
+.cta-checklist { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-direction: column; gap: .75rem; text-align: left; width: 100%; max-width: 29rem; }
+.cta-checklist li { display: flex; align-items: baseline; gap: .75rem; font-size: 1.05rem; font-weight: 700; color: #F6EBDD; line-height: 1.4; }
+.cta-check { color: var(--yellow, #ffde65); font-weight: 900; font-size: 1.15rem; flex-shrink: 0; }
 
-.help-links { margin-top: 2.25rem; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem .75rem; font-size: .88rem; color: #d4bee8; }
+.cta-price-wrap { display: flex; align-items: baseline; justify-content: center; gap: .65rem; margin-top: 1.75rem; margin-bottom: .85rem; }
+.cta-price-value { font: 600 clamp(2.8rem, 6.5vw, 3.8rem)/1 var(--display); color: var(--yellow, #ffde65); letter-spacing: -.03em; }
+.cta-price-type { font-size: 1rem; font-weight: 700; color: #F6EBDD; }
+
+.button--cta-final { width: 100%; max-width: 29rem; min-height: 56px !important; font-size: clamp(1.05rem, 4vw, 1.25rem); font-weight: 900; border-radius: .95rem; box-shadow: 0 4px 0 #b28125, 0 8px 24px rgba(0, 0, 0, 0.3); }
+
+.cta-post-meta { margin-top: .85rem; font-size: .92rem; font-weight: 700; color: #F6EBDD; line-height: 1.4; text-align: center; }
+
+.guarantee-box-short { margin-top: 1.6rem; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(246, 235, 221, 0.22); border-radius: .85rem; padding: .85rem 1.25rem; display: flex; align-items: center; justify-content: center; gap: .65rem; text-align: center; max-width: 29rem; font-size: .92rem; font-weight: 700; color: #F6EBDD; line-height: 1.4; }
+.guarantee-box-short p { margin: 0; }
+.guarantee-icon { font-size: 1.25rem; flex-shrink: 0; }
+
+.help-links { margin-top: 2rem; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem .75rem; font-size: .88rem; color: #F6EBDD; }
 .help-links a { color: #fff; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
-.help-links a:hover { color: var(--yellow); }
+.help-links a:hover { color: var(--yellow, #ffde65); }
 
 /* Rodapé */
 .site-footer { background: #f5edf9; border-top: 1px solid var(--line); }

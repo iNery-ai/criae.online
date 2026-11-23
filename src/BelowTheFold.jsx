@@ -389,23 +389,37 @@ export function FinalCTA({ price }) {
   return (
     <section className="section final-cta" id="comprar" aria-labelledby="cta-title">
       <div className="wrap final-cta-clean">
-        <p className="eyebrow">Acesso digital imediato</p>
-        <h2 id="cta-title">Garanta o Natal Mágico completo</h2>
-        <p className="final-cta-desc">
-          40 atividades + Versão Econômica + Bônus Kit Personalizado para imprimir em casa ou na escola.
-        </p>
+        <h2 id="cta-title">Natal Mágico completo</h2>
 
-        <div className="final-cta-action">
-          <p className="final-cta-price">{price}</p>
-          <p className="final-cta-meta">Pagamento único · Acesso imediato no seu e-mail</p>
-          <ButtonLink href={checkout} onClick={() => handleCheckout('CTA Final')} className="button button--primary button--hero">
-            QUERO O NATAL MÁGICO · {price}
-          </ButtonLink>
+        <ul className="cta-checklist" aria-label="Conteúdo do pacote">
+          <li>
+            <span className="cta-check" aria-hidden="true">✓</span>
+            <span>40 atividades em PDF A4 · 3 a 8 anos</span>
+          </li>
+          <li>
+            <span className="cta-check" aria-hidden="true">✓</span>
+            <span>Versão Econômica para gastar menos tinta</span>
+          </li>
+          <li>
+            <span className="cta-check" aria-hidden="true">✓</span>
+            <span>Bônus: Kit Personalizado com o nome da criança</span>
+          </li>
+        </ul>
+
+        <div className="cta-price-wrap">
+          <strong className="cta-price-value">{price}</strong>
+          <span className="cta-price-type">pagamento único</span>
         </div>
 
-        <div className="guarantee-badge">
+        <ButtonLink href={checkout} onClick={() => handleCheckout('CTA Final')} className="button button--primary button--hero button--cta-final">
+          QUERO O NATAL MÁGICO
+        </ButtonLink>
+
+        <p className="cta-post-meta">Acesso imediato por e-mail · imprima em casa ou na escola</p>
+
+        <div className="guarantee-box-short">
           <span className="guarantee-icon" aria-hidden="true">🛡️</span>
-          <p><b>Garantia incondicional de 7 dias:</b> se não gostar por qualquer motivo, receba 100% do seu dinheiro de volta.</p>
+          <p>Garantia de 7 dias. Não gostou? Devolvemos 100% do valor.</p>
         </div>
 
         <div className="help-links">
